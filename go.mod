@@ -1,3 +1,3 @@
-module FirstAPI
+module GoApi
 
 go 1.22
