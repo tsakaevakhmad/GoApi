@@ -10,8 +10,8 @@ func InitControllers() *gin.Engine {
 
 	router.GET("/album/all", controllers.GetAlbums)
 	router.GET("/album/:id", controllers.GetAlbumsById)
-	router.POST("/album/create", controllers.GetAlbumsById)
-	router.PUT("/album/put", controllers.GetAlbumsById)
+	router.POST("/album/create", controllers.PostAlbum)
+	router.PUT("/album/put", controllers.PutAlbum)
 
 	return router
 }
