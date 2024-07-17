@@ -62,4 +62,5 @@ func PutAlbum(c *gin.Context) {
 	}
 
 	albums = append(albums, album)
+	c.IndentedJSON(http.StatusOK, album)
 }
