@@ -8,13 +8,6 @@ import (
 	"strconv"
 )
 
-var albums = []domain.Album{
-	{Id: 1, Price: 13.99, Artist: "Oleg F. A.", Name: "Her'"},
-	{Id: 2, Price: 10.99, Artist: "Manis K. K.", Name: "YouNga"},
-	{Id: 3, Price: 9.99, Artist: "Alister K. E.", Name: "Shorts"},
-	{Id: 4, Price: 2.99, Artist: "Capitan K. E.", Name: "Manual"},
-}
-
 type AlbumController struct {
 	albumServices interfaces.IAlbumServices
 }
