@@ -8,10 +8,11 @@ import (
 func InitControllers() *gin.Engine {
 	router := gin.Default()
 
-	router.GET("/album/all", controllers.GetAlbums)
+	router.GET("/album", controllers.GetAlbums)
 	router.GET("/album/:id", controllers.GetAlbumsById)
 	router.POST("/album/create", controllers.PostAlbum)
 	router.PUT("/album/put", controllers.PutAlbum)
+	router.DELETE("/album/delete/:id", controllers.DeleteAlbum)
 
 	return router
 }

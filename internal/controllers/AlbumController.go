@@ -42,20 +42,14 @@ func PostAlbum(c *gin.Context) {
 }
 
 func PutAlbum(c *gin.Context) {
-	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
 	var album domain.Album
 
 	if err := c.BindJSON(&album); err != nil {
 		return
 	}
 
-	if id != album.Id {
-		c.IndentedJSON(http.StatusBadRequest, album)
-		return
-	}
-
 	for _, a := range albums {
-		if a.Id == id {
+		if a.Id == album.Id {
 			a = album
 			c.IndentedJSON(http.StatusOK, album)
 		}
@@ -63,4 +57,18 @@ func PutAlbum(c *gin.Context) {
 
 	albums = append(albums, album)
 	c.IndentedJSON(http.StatusOK, album)
+}
+
+func DeleteAlbum(c *gin.Context) {
+	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+
+	for i, a := range albums {
+		if a.Id == id {
+			albums = append(albums[:i], albums[i+1:]...)
+			c.IndentedJSON(http.StatusOK, a)
+			return
+		}
+	}
+
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "not found 404"})
 }
