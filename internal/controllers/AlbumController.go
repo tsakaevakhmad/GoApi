@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"GoApi/internal/businesslayer/interfaces"
 	"GoApi/internal/domain"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -14,61 +15,60 @@ var albums = []domain.Album{
 	{Id: 4, Price: 2.99, Artist: "Capitan K. E.", Name: "Manual"},
 }
 
-func GetAlbums(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, albums)
+type AlbumController struct {
+	albumServices interfaces.IAlbumServices
 }
 
-func GetAlbumsById(c *gin.Context) {
-	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
-	for _, a := range albums {
-		if a.Id == id {
-			c.IndentedJSON(http.StatusOK, a)
-			return
-		}
+func NewAlbumController(albumServices interfaces.IAlbumServices) *AlbumController {
+	return &AlbumController{
+		albumServices: albumServices,
 	}
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "not found 404"})
 }
 
-func PostAlbum(c *gin.Context) {
+func (a *AlbumController) GetAlbums(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, a.albumServices.GetAll())
+}
+
+func (a *AlbumController) GetAlbumsById(c *gin.Context) {
+	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+	album := a.albumServices.Get(id)
+
+	if album == nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "not found 404"})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, album)
+}
+
+func (a *AlbumController) PostAlbum(c *gin.Context) {
 	var album domain.Album
 
 	if err := c.BindJSON(&album); err != nil {
 		return
 	}
 
-	album.Id = int64(len(albums) + 1)
-	albums = append(albums, album)
+	a.albumServices.Create(album)
 	c.IndentedJSON(http.StatusOK, album)
 }
 
-func PutAlbum(c *gin.Context) {
+func (a *AlbumController) PutAlbum(c *gin.Context) {
 	var album domain.Album
 
 	if err := c.BindJSON(&album); err != nil {
 		return
 	}
 
-	for _, a := range albums {
-		if a.Id == album.Id {
-			a = album
-			c.IndentedJSON(http.StatusOK, album)
-		}
-	}
-
-	albums = append(albums, album)
+	a.albumServices.Put(album)
 	c.IndentedJSON(http.StatusOK, album)
 }
 
-func DeleteAlbum(c *gin.Context) {
+func (a *AlbumController) DeleteAlbum(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
 
-	for i, a := range albums {
-		if a.Id == id {
-			albums = append(albums[:i], albums[i+1:]...)
-			c.IndentedJSON(http.StatusOK, a)
-			return
-		}
+	if nil == a.albumServices.Delete(id) {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "not found 404"})
 	}
 
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "not found 404"})
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "success"})
 }

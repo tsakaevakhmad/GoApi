@@ -1,5 +1,11 @@
 package main
 
+import (
+	"GoApi/internal/businesslayer/services"
+	"GoApi/internal/controllers"
+)
+
 func main() {
-	InitControllers().Run("localhost:8080")
+	album := controllers.NewAlbumController(services.NewAlbumServices())
+	InitControllers(album).Run("localhost:8080")
 }
