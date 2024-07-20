@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func InitControllers(album *controllers.AlbumController) *gin.Engine {
+func Run(album *controllers.AlbumController) {
 	router := gin.Default()
 
 	// Albums
@@ -15,5 +15,5 @@ func InitControllers(album *controllers.AlbumController) *gin.Engine {
 	router.PUT("/album/put", album.PutAlbum)
 	router.DELETE("/album/delete/:id", album.DeleteAlbum)
 
-	return router
+	router.Run("localhost:8080")
 }
