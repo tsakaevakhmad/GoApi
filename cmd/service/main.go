@@ -7,6 +7,8 @@ import (
 )
 
 func main() {
-	album := controllers.NewAlbumController(services.NewAlbumServices(repositories.NewAlbumRepository()))
+	dbConnection := "user=postgres password=password dbname=AbumsPG sslmode=disable"
+	driver := "postgres"
+	album := controllers.NewAlbumController(services.NewAlbumServices(repositories.NewAlbumRepository(driver, dbConnection)))
 	Run(album)
 }

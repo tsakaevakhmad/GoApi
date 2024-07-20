@@ -1,11 +1,28 @@
 package repositories
 
-import "GoApi/internal/domain"
+import (
+	"GoApi/internal/domain"
+	"database/sql"
+)
 
-type AlbumRepository struct{}
+type AlbumRepository struct {
+	context *sql.DB
+}
 
-func NewAlbumRepository() *AlbumRepository {
-	return &AlbumRepository{}
+func NewAlbumRepository(driver string, connection string) *AlbumRepository {
+	return &AlbumRepository{
+		context: getContext(driver, connection),
+	}
+}
+
+func getContext(driver string, connection string) *sql.DB {
+	context, err := sql.Open(driver, connection)
+	if err != nil {
+		panic(err)
+	}
+	defer context.Close()
+
+	return context
 }
 
 var albums = []domain.Album{
@@ -32,6 +49,7 @@ func (ar *AlbumRepository) Create(data domain.Album) *domain.Album {
 	data.Id = int64(len(albums) + 1)
 	albums = append(albums, data)
 	return &data
+
 }
 
 func (ar *AlbumRepository) Delete(id int64) *domain.Album {
