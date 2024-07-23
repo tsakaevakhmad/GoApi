@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"GoApi/internal/datalayer"
 	"GoApi/internal/domain"
 	"database/sql"
 )
@@ -11,18 +12,8 @@ type AlbumRepository struct {
 
 func NewAlbumRepository(driver string, connection string) *AlbumRepository {
 	return &AlbumRepository{
-		context: getContext(driver, connection),
+		context: datalayer.GetContext(driver, connection),
 	}
-}
-
-func getContext(driver string, connection string) *sql.DB {
-	context, err := sql.Open(driver, connection)
-	if err != nil {
-		panic(err)
-	}
-	defer context.Close()
-
-	return context
 }
 
 var albums = []domain.Album{
